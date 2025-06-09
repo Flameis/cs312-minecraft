@@ -86,8 +86,8 @@ export TF_VAR_minecraft_port=25565
 
 ### 1. Clone and Setup
 ```bash
-git clone <repository-url>
-cd minecraft-server-automation
+git clone https://github.com/Flameis/cs312-minecraft.git
+cd cs312-minecraft
 chmod +x scripts/*.sh
 ```
 
