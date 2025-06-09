@@ -1,20 +1,16 @@
 #!/bin/bash
 
-set -e
+echo "Planning infrastructure..."
 
-echo "=== Planning Minecraft Server Infrastructure ==="
+# Load .env
+[ -f "../.env" ] && export $(grep -v '^#' ../.env | xargs)
 
-# Navigate to terraform directory
+export AWS_ACCESS_KEY_ID=$aws_access_key_id
+export AWS_SECRET_ACCESS_KEY=$aws_secret_access_key
+export AWS_SESSION_TOKEN=$aws_session_token
+export AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-us-west-2}
+
 cd terraform
-
-# Check if Terraform is initialized
-if [ ! -d ".terraform" ]; then
-    echo "Error: Terraform not initialized. Please run ./scripts/init.sh first."
-    exit 1
-fi
-
-echo "Creating Terraform execution plan..."
 terraform plan -out=tfplan
 
-echo "=== Plan Complete ==="
-echo "Review the plan above. If it looks correct, run ./scripts/apply.sh to apply the changes."
+echo "Plan ready. Run apply.sh to create resources."

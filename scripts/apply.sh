@@ -1,29 +1,17 @@
 #!/bin/bash
 
-set -e
+echo "Creating infrastructure..."
 
-echo "=== Applying Minecraft Server Infrastructure ==="
+# Load .env
+[ -f "../.env" ] && export $(grep -v '^#' ../.env | xargs)
 
-# Navigate to terraform directory
+export AWS_ACCESS_KEY_ID=$aws_access_key_id
+export AWS_SECRET_ACCESS_KEY=$aws_secret_access_key
+export AWS_SESSION_TOKEN=$aws_session_token
+export AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-us-west-2}
+
 cd terraform
-
-# Check if plan file exists
-if [ ! -f "tfplan" ]; then
-    echo "Error: No execution plan found. Please run ./scripts/plan.sh first."
-    exit 1
-fi
-
-echo "Applying Terraform plan..."
 terraform apply tfplan
-
-echo "Getting infrastructure outputs..."
-terraform output
-
-# Generate Ansible inventory
-echo "Generating Ansible inventory..."
 terraform output -json > ../ansible/terraform_outputs.json
 
-echo "=== Infrastructure Deployment Complete ==="
-echo "Next steps:"
-echo "  1. Wait 2-3 minutes for instance to fully boot"
-echo "  2. Run ./scripts/configure.sh to configure the Minecraft server"
+echo "Infrastructure created. Wait a few minutes, then run configure.sh"
