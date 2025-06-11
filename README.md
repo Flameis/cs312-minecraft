@@ -6,7 +6,7 @@ Luke Scovel – 934-459-132 – CS312 System Administration
 
 ## Background
 
-This project provides a fully automated solution for deploying and managing a Minecraft server on AWS infrastructure. The system provisions EC2 instances, configures networking, installs dependencies, and sets up the Minecraft server with proper systemd service management. The server is configured to automatically start on boot and can be managed through systemd commands for proper shutdown procedures.
+This project provides a fully automated solution for deploying and managing a Minecraft server on AWS infrastructure. The system provisions EC2 instances, configures networking, installs dependencies, and sets up the Minecraft server with proper systemd service management. The server is configured to automatically start on boot and can be managed through systemd commands for proper shutdown procedures. Github actions is enabled to deploy upon commit to the main branch.
 
 ### What We'll Do:
 - Provision AWS EC2 infrastructure using Terraform
