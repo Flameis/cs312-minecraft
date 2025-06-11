@@ -26,7 +26,7 @@ echo "Configuring server at $INSTANCE_IP..."
 
 # Wait for SSH
 echo "Waiting for SSH..."
-until ssh -i "$SSH_KEY" -o ConnectTimeout=5 -o StrictHostKeyChecking=no ec2-user@$INSTANCE_IP exit 2>/dev/null; do
+until ssh -i "$SSH_KEY" -o ConnectTimeout=5 -o StrictHostKeyChecking=no ubuntu@$INSTANCE_IP exit 2>/dev/null; do
     echo "Waiting for SSH to be available..."
     sleep 10
 done
@@ -34,7 +34,7 @@ done
 echo "Installing Java and setting up Minecraft server..."
 
 # Install Java and dependencies
-ssh -i "$SSH_KEY" -o StrictHostKeyChecking=no ec2-user@$INSTANCE_IP <<'EOF'
+ssh -i "$SSH_KEY" -o StrictHostKeyChecking=no ubuntu@$INSTANCE_IP <<'EOF'
 sudo yum update -y
 sudo yum install -y java-17-amazon-corretto-headless wget
 
