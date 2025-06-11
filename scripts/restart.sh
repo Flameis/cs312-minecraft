@@ -2,6 +2,8 @@
 
 echo "Rebooting Minecraft server instance..."
 
+export AWS_DEFAULT_REGION=us-west-2
+
 cd terraform
 INSTANCE_IP=$(terraform output -raw instance_public_ip)
 INSTANCE_ID=$(terraform output -raw instance_id)
