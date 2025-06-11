@@ -6,15 +6,19 @@ Luke Scovel – 934-459-132 – CS312 System Administration
 
 ## Requirements
 
+- An AWS account
+- Basic knowledge of Linux commands
+- A Minecraft client installed on your local machine
+- A linux environment with `git`, `terraform`, and `aws-cli` installed
+
 ### AWS Credentials Setup
 1. Access your AWS Management Console and retrieve credentials
-2. Set up your AWS CLI with the provided credentials:
-```bash
-touch ~/.aws/credentials
-echo "[default]" >> ~/.aws/credentials
-echo "aws_access_key_id = <YOUR_ACCESS_KEY>" >> ~/.aws/credentials
-echo "aws_secret_access_key = <YOUR_SECRET_KEY>" >> ~/.aws/credentials
-echo "aws_session_token = <YOUR_SESSION_TOKEN>" >> ~/.aws/credentials
+2. Copy them into `~/.aws/credentials`:
+```ini
+[default]
+aws_access_key_id=<YOUR_ACCESS_KEY>
+aws_secret_access_key=<YOUR_SECRET_KEY>
+aws_session_token=<YOUR_SESSION_TOKEN>
 ```
 
 ### Environment Variables
@@ -35,102 +39,25 @@ cd cs312-minecraft
 chmod +x scripts/*.sh
 ```
 
-### 2. Create Infrastructure and Configure Server
+### 2. Install Dependencies
 ```bash
-# Create infrastructure and configure server
+./scripts/install.sh
+```
+
+### 3. Create the Resources
+```bash
 ./scripts/create.sh
 ```
 
-### 3. Test Connectivity
+### 4. Test the Minecraft Server
 ```bash
-# Test connectivity
 ./scripts/test.sh
-```
-
-### 4. Cleanup (when done)
-```bash
-# Destroy infrastructure
-./scripts/destroy.sh
 ```
 
 ---
 
 ## Detailed Commands
 
-### Infrastructure Management
-```bash
-# Initialize Terraform backend and download providers
-cd terraform
-terraform init
-
-# Create and apply infrastructure
-terraform apply
-
-# Show current state
-terraform show
-
-# Destroy all resources
-terraform destroy
-```
-
-### Configuration Management
-```bash
-# SSH into instance for manual configuration (use saved key)
-ssh -i minecraft-key.pem ec2-user@<INSTANCE_IP>
-
-# Check service status via SSH
-ssh -i minecraft-key.pem ec2-user@<INSTANCE_IP> "sudo systemctl status minecraft"
-
-# View service logs via SSH
-ssh -i minecraft-key.pem ec2-user@<INSTANCE_IP> "sudo journalctl -u minecraft -n 50"
-```
-
-### Service Management
-```bash
-# Check service status
-ssh -i minecraft-key.pem ec2-user@<INSTANCE_IP> "sudo systemctl status minecraft"
-
-# Restart service
-ssh -i minecraft-key.pem ec2-user@<INSTANCE_IP> "sudo systemctl restart minecraft"
-
-# View logs
-ssh -i minecraft-key.pem ec2-user@<INSTANCE_IP> "sudo journalctl -u minecraft -f"
-```
-
----
-
-## Connecting to the Minecraft Server
-
-### Network Validation
-```bash
-# Test server connectivity (replace with your instance IP)
-nmap -sV -Pn -p T:25565 <INSTANCE_PUBLIC_IP>
-
-# Expected output:
-# PORT      STATE SERVICE   VERSION
-# 25565/tcp open  minecraft Minecraft 1.20.x
-```
-
-### Minecraft Client Connection
-1. Open Minecraft Java Edition
-2. Navigate to "Multiplayer"
-3. Click "Add Server"
-4. Enter server details:
-   - **Server Name**: "Automated AWS Server"
-   - **Server Address**: `<INSTANCE_PUBLIC_IP>:25565`
-5. Click "Done" and join the server
-
-### Troubleshooting Connection Issues
-```bash
-# Check if port is accessible
-telnet <INSTANCE_PUBLIC_IP> 25565
-
-# Verify security group rules allow port 25565
-aws ec2 describe-security-groups --group-ids <SECURITY_GROUP_ID>
-
-# Check service status
-ssh -i minecraft-key.pem ec2-user@<INSTANCE_IP> "sudo systemctl status minecraft"
-```
 
 ---
 
