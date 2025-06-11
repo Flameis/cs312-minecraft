@@ -4,18 +4,18 @@ Luke Scovel – 934-459-132 – CS312 System Administration
 
 ## Background
 
-This project automates the provisioning, configuration, and deployment of a Minecraft server on AWS infrastructure using Infrastructure as Code (IaC) principles. Unlike manual setup processes, this solution uses Terraform for infrastructure provisioning, Ansible for configuration management, and bash scripts for orchestration to create a fully automated, reproducible deployment pipeline.
+This project automates the provisioning, configuration, and deployment of a Minecraft server on AWS infrastructure using Infrastructure as Code (IaC) principles. Unlike manual setup processes, this solution uses Terraform for infrastructure provisioning, SSH for configuration management, and bash scripts for orchestration to create a fully automated, reproducible deployment pipeline.
 
 **What we'll do:**
 - Provision AWS VPC, subnets, security groups, and EC2 instances using Terraform
-- Configure the Minecraft server environment using Ansible
+- Configure the Minecraft server environment using SSH automation
 - Implement proper service management with systemd
 - Ensure automatic server startup/shutdown on instance reboot
 - Create a complete CI/CD pipeline for infrastructure management
 
 **How we'll do it:**
 - Use Terraform to define and provision AWS infrastructure
-- Use Ansible to configure the EC2 instance and install Minecraft server
+- Use SSH automation to configure the EC2 instance and install Minecraft server
 - Implement proper service lifecycle management
 - Version control all infrastructure and configuration code
 
@@ -27,7 +27,7 @@ This project automates the provisioning, configuration, and deployment of a Mine
 - **AWS Account** with programmatic access
 - **AWS CLI v2.x** installed and configured
 - **Terraform v1.5+** installed
-- **Ansible v2.9+** installed
+- **SSH client** for remote configuration
 - **Git** for version control
 - **nmap** for connectivity testing
 - **jq** for JSON parsing
@@ -58,10 +58,10 @@ export TF_VAR_minecraft_port=25565
 
 ```
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   Git Repository │    │   Terraform      │    │   Ansible       │
+│   Git Repository │    │   Terraform      │    │   SSH           │
 │                 │───▶│   Infrastructure │───▶│   Configuration │
 │ • IaC Scripts   │    │   Provisioning   │    │   Management    │
-│ • Ansible Plays │    │                  │    │                 │
+│ • SSH Scripts   │    │                  │    │                 │
 └─────────────────┘    └──────────────────┘    └─────────────────┘
                                 │                        │
                                 ▼                        ▼
@@ -75,7 +75,7 @@ export TF_VAR_minecraft_port=25565
 
 ### Major Pipeline Steps
 1. **Infrastructure Provisioning** - Terraform creates AWS resources
-2. **Instance Configuration** - Ansible configures the EC2 instance
+2. **Instance Configuration** - SSH automation configures the EC2 instance
 3. **Minecraft Installation** - Automated download and setup
 4. **Service Configuration** - Systemd service for auto-start/stop
 5. **Validation** - Network connectivity testing
@@ -96,16 +96,13 @@ chmod +x scripts/*.sh
 # Initialize Terraform
 ./scripts/init.sh
 
-# Plan infrastructure changes
-./scripts/plan.sh
-
 # Apply infrastructure
-./scripts/apply.sh
+./scripts/terraform.sh
 ```
 
 ### 3. Configure Server
 ```bash
-# Run Ansible configuration
+# Run SSH configuration
 ./scripts/configure.sh
 ```
 
@@ -130,11 +127,8 @@ chmod +x scripts/*.sh
 # Initialize Terraform backend and download providers
 terraform init
 
-# Create execution plan
-terraform plan -out=tfplan
-
-# Apply the planned changes
-terraform apply tfplan
+# Create and apply infrastructure
+terraform apply
 
 # Show current state
 terraform show
@@ -145,23 +139,26 @@ terraform destroy
 
 ### Configuration Management
 ```bash
-# Run Ansible playbook
-ansible-playbook -i inventory/aws_ec2.yml playbooks/minecraft-setup.yml
+# SSH into instance for manual configuration
+ssh -i ~/.ssh/id_rsa ec2-user@<INSTANCE_IP>
 
-# Check Ansible connectivity
-ansible all -i inventory/aws_ec2.yml -m ping
+# Check service status via SSH
+ssh ec2-user@<INSTANCE_IP> "sudo systemctl status minecraft"
 
-# Run specific tags
-ansible-playbook -i inventory/aws_ec2.yml playbooks/minecraft-setup.yml --tags="minecraft"
+# View service logs via SSH
+ssh ec2-user@<INSTANCE_IP> "sudo journalctl -u minecraft -n 50"
 ```
 
 ### Service Management
 ```bash
-# Check service status (via Ansible)
-ansible all -i inventory/aws_ec2.yml -m systemd -a "name=minecraft state=started"
+# Check service status
+ssh ec2-user@<INSTANCE_IP> "sudo systemctl status minecraft"
 
-# View service logs
-ansible all -i inventory/aws_ec2.yml -m shell -a "journalctl -u minecraft -n 50"
+# Restart service
+ssh ec2-user@<INSTANCE_IP> "sudo systemctl restart minecraft"
+
+# View logs
+ssh ec2-user@<INSTANCE_IP> "sudo journalctl -u minecraft -f"
 ```
 
 ---
@@ -211,22 +208,14 @@ minecraft-server-automation/
 │   ├── variables.tf
 │   ├── outputs.tf
 │   └── versions.tf
-├── ansible/
-│   ├── playbooks/
-│   │   └── minecraft-setup.yml
-│   ├── inventory/
-│   │   └── aws_ec2.yml
-│   └── roles/
-│       └── minecraft/
 ├── scripts/
 │   ├── init.sh
-│   ├── plan.sh
-│   ├── apply.sh
+│   ├── terraform.sh
 │   ├── configure.sh
 │   ├── test.sh
 │   └── destroy.sh
 └── docs/
-    └── architecture.md
+    └── setup.md
 ```
 
 ---
@@ -234,7 +223,7 @@ minecraft-server-automation/
 ## Resources and Sources
 
 - [Terraform AWS Provider Documentation](https://registry.terraform.io/providers/hashicorp/aws/latest/docs)
-- [Ansible AWS Guide](https://docs.ansible.com/ansible/latest/scenario_guides/guide_aws.html)
+- [AWS EC2 SSH Access Guide](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AccessingInstancesLinux.html)
 - [Minecraft Server Download API](https://launchermeta.mojang.com/mc/game/version_manifest.json)
 - [AWS VPC Best Practices](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-security-best-practices.html)
 - [Systemd Service Management](https://www.freedesktop.org/software/systemd/man/systemd.service.html)

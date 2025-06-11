@@ -3,12 +3,12 @@ name: Deploy Minecraft Server
 on:
   push:
     branches: [main]
-  # workflow_dispatch:
-  #   inputs:
-  #     action:
-  #       type: choice
-  #       options: [deploy, destroy, test]
-  #       default: deploy
+  workflow_dispatch:
+    inputs:
+      action:
+        type: choice
+        options: [deploy, destroy, test]
+        default: deploy
 
 env:
   AWS_DEFAULT_REGION: us-west-2
@@ -16,7 +16,7 @@ env:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' || github.event.inputs.action == 'deploy' && github.event_name == 'workflow_dispatch'
 
     steps:
     - uses: actions/checkout@v4
@@ -24,8 +24,7 @@ jobs:
     - name: Setup tools
       run: |
         sudo apt-get update
-        sudo apt-get install -y ansible jq nmap
-        pip install boto3
+        sudo apt-get install -y jq nmap openssh-client
     
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v3
@@ -45,31 +44,9 @@ jobs:
       run: |
         chmod +x scripts/*.sh
         ./scripts/init.sh
-        ./scripts/plan.sh
-        ./scripts/apply.sh
         sleep 120
         ./scripts/configure.sh
         ./scripts/test.sh
-
-  test:
-    runs-on: ubuntu-latest
-    if: github.event.inputs.action == 'test'
-    
-    steps:
-    - uses: actions/checkout@v4
-    
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v3
-      with:
-        terraform_version: "1.5"
-    
-    - name: Test plan
-      run: |
-        chmod +x scripts/*.sh
-        cd terraform
-        terraform init
-        terraform validate
-        terraform plan
 
   destroy:
     runs-on: ubuntu-latest
