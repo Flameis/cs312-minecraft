@@ -43,19 +43,6 @@ aws_session_token=<YOUR_SESSION_TOKEN>
 
 ---
 
-## Pipeline Overview
-
-1. **Clone the Repository**: Get the project files from GitHub
-2. **Install Dependencies**: Use the provided script to install necessary tools
-3. **Create Resources**: Run the script to provision AWS resources and configure the Minecraft server
-4. **Test the Server**: Validate the deployment and ensure the server is running
-5. **Restart Management**: Use the provided script to manage server restarts
-6. **Destroy Resources**: Clean up AWS resources when no longer needed
-7. **Proper Shutdown**: Ensure the Minecraft server is stopped gracefully before instance termination
-8. **Connect to the Server**: Use the Minecraft client to connect to your newly created server
-
----
-
 ## Quick Start
 
 ### 1. Clone and Setup
@@ -80,18 +67,23 @@ chmod +x scripts/*.sh
 ./scripts/test.sh
 ```
 
-### 5. Restart the Server
+### 5. Connect to the Server
+Open your Minecraft client and add a new server with the IP address shown in the test output, using port `25565`.
+
+## Management Commands
+
+### Restart the AWS Resources 
 ```bash
 ./scripts/restart.sh
 ```
 
-### 6. Destroy the Resources
+### Destroy the AWS Resources (Warning: This will delete all server data)
 ```bash
 ./scripts/destroy.sh
 ```
 ---
 
-## Detailed Commands
+## Detailed Commands And Pipeline
 
 ### `./scripts/install.sh`
 Installs all required dependencies for the automation pipeline:
@@ -136,22 +128,6 @@ Complete infrastructure cleanup:
 - **Resource Cleanup**: Removes security groups and key pairs
 - **State Management**: Uses Terraform destroy for complete cleanup
 - **Verification**: Ensures all resources are properly removed
-
-### Proper Server Shutdown
-The systemd service configuration ensures proper Minecraft server shutdown:
-```bash
-# Check service status
-sudo systemctl status minecraft
-
-# Stop server properly (saves world data)
-sudo systemctl stop minecraft
-
-# Start server
-sudo systemctl start minecraft
-
-# Restart server (proper stop then start)
-sudo systemctl restart minecraft
-```
 
 ### Connecting to Your Server
 1. Get your server IP from the test output
