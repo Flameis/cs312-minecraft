@@ -2,6 +2,16 @@
 
 echo "Creating infrastructure..."
 
+# Create a new SSH key pair if not provided
+if [ -z "$SSH_KEY" ]; then
+    echo "Generating new SSH key pair..."
+    ssh-keygen -t rsa -b 2048 -f minecraft-key -N "" || { echo "Failed to generate SSH key"; exit 1; }
+else
+    echo "Using provided SSH key from environment variable."
+    echo "$SSH_KEY" > minecraft-key.pem
+    chmod 600 minecraft-key.pem
+fi
+
 # Create or update the key pair in AWS
 aws ec2 delete-key-pair --key-name minecraft-server-key 2>/dev/null || true
 aws ec2 import-key-pair --key-name minecraft-server-key --public-key-material fileb://minecraft-key.pub
