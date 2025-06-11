@@ -13,7 +13,7 @@ variable "instance_type" {
 variable "ami_id" {
   description = "AMI ID for the EC2 instance"
   type        = string
-  default     = "ami-07b8a117da8f2c473" # Ubuntu Server 20.04 LTS in us-west-2
+  default     = "ami-0a605bc2ef5707a18" # Ubuntu Server 24.04 LTS (HVM),EBS in us-west-2
 }
 
 variable "key_name" {
