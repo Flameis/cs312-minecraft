@@ -63,7 +63,6 @@ fi
 echo "Configuring server at $INSTANCE_IP..."
 
 # Wait for SSH
-echo "Waiting for SSH..."
 until ssh -i "$SSH_KEY_FILE" -o ConnectTimeout=5 -o StrictHostKeyChecking=no ubuntu@$INSTANCE_IP exit 2>/dev/null; do
     echo "Waiting for SSH to be available..."
     sleep 10
