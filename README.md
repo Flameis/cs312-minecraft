@@ -20,6 +20,7 @@ Set the following environment variables:
 export AWS_DEFAULT_REGION=us-west-2
 export TF_VAR_instance_type=t3.small
 export TF_VAR_minecraft_port=25565
+```
 ---
 
 ## Quick Start
