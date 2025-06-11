@@ -6,7 +6,9 @@ cd terraform
 terraform init
 terraform fmt
 terraform validate
-terraform apply
+terraform apply -auto-approve
+
+sleep 10  # Wait for resources to be ready
 
 # Save private key for SSH access
 echo "Saving SSH private key..."

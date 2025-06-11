@@ -86,33 +86,24 @@ export TF_VAR_minecraft_port=25565
 
 ### 1. Clone and Setup
 ```bash
-git clone https://github.com/Flameis/cs312-minecraft.git
+git clone <your-repository-url>
 cd cs312-minecraft
 chmod +x scripts/*.sh
 ```
 
-### 2. Initialize Infrastructure
+### 2. Create Infrastructure and Configure Server
 ```bash
-# Initialize Terraform
-./scripts/init.sh
-
-# Apply infrastructure
-./scripts/terraform.sh
+# Create infrastructure and configure server
+./scripts/create.sh
 ```
 
-### 3. Configure Server
-```bash
-# Run SSH configuration
-./scripts/configure.sh
-```
-
-### 4. Validate Deployment
+### 3. Validate Deployment
 ```bash
 # Test connectivity
 ./scripts/test.sh
 ```
 
-### 5. Cleanup (when done)
+### 4. Cleanup (when done)
 ```bash
 # Destroy infrastructure
 ./scripts/destroy.sh
@@ -125,6 +116,7 @@ chmod +x scripts/*.sh
 ### Infrastructure Management
 ```bash
 # Initialize Terraform backend and download providers
+cd terraform
 terraform init
 
 # Create and apply infrastructure
@@ -139,26 +131,26 @@ terraform destroy
 
 ### Configuration Management
 ```bash
-# SSH into instance for manual configuration
-ssh -i ~/.ssh/id_rsa ec2-user@<INSTANCE_IP>
+# SSH into instance for manual configuration (use saved key)
+ssh -i minecraft-key.pem ec2-user@<INSTANCE_IP>
 
 # Check service status via SSH
-ssh ec2-user@<INSTANCE_IP> "sudo systemctl status minecraft"
+ssh -i minecraft-key.pem ec2-user@<INSTANCE_IP> "sudo systemctl status minecraft"
 
 # View service logs via SSH
-ssh ec2-user@<INSTANCE_IP> "sudo journalctl -u minecraft -n 50"
+ssh -i minecraft-key.pem ec2-user@<INSTANCE_IP> "sudo journalctl -u minecraft -n 50"
 ```
 
 ### Service Management
 ```bash
 # Check service status
-ssh ec2-user@<INSTANCE_IP> "sudo systemctl status minecraft"
+ssh -i minecraft-key.pem ec2-user@<INSTANCE_IP> "sudo systemctl status minecraft"
 
 # Restart service
-ssh ec2-user@<INSTANCE_IP> "sudo systemctl restart minecraft"
+ssh -i minecraft-key.pem ec2-user@<INSTANCE_IP> "sudo systemctl restart minecraft"
 
 # View logs
-ssh ec2-user@<INSTANCE_IP> "sudo journalctl -u minecraft -f"
+ssh -i minecraft-key.pem ec2-user@<INSTANCE_IP> "sudo journalctl -u minecraft -f"
 ```
 
 ---
@@ -193,7 +185,7 @@ telnet <INSTANCE_PUBLIC_IP> 25565
 aws ec2 describe-security-groups --group-ids <SECURITY_GROUP_ID>
 
 # Check service status
-ansible all -i inventory/aws_ec2.yml -m systemd -a "name=minecraft"
+ssh -i minecraft-key.pem ec2-user@<INSTANCE_IP> "sudo systemctl status minecraft"
 ```
 
 ---
@@ -201,21 +193,20 @@ ansible all -i inventory/aws_ec2.yml -m systemd -a "name=minecraft"
 ## Project Structure
 
 ```
-minecraft-server-automation/
+cs312-minecraft/
 ├── README.md
 ├── terraform/
 │   ├── main.tf
 │   ├── variables.tf
-│   ├── outputs.tf
-│   └── versions.tf
+│   └── outputs.tf
 ├── scripts/
-│   ├── init.sh
-│   ├── terraform.sh
-│   ├── configure.sh
+│   ├── create.sh
 │   ├── test.sh
 │   └── destroy.sh
-└── docs/
-    └── setup.md
+├── .github/
+│   └── workflows/
+│       └── deploy.yaml
+└── setup.md
 ```
 
 ---
