@@ -3,13 +3,45 @@
 echo "Installing dependencies..."
 
 sudo apt-get update
-sudo apt-get install -y jq nmap openssh-client
+
+# Install jq if not installed
+if ! command -v jq &> /dev/null; then
+    echo "jq not found, installing..."
+    sudo apt-get install -y jq
+else
+    echo "jq is already installed."
+fi
+
+# Install openssh-client if not installed
+if ! command -v ssh &> /dev/null; then
+    echo "openssh-client not found, installing..."
+    sudo apt-get install -y openssh-client
+else
+    echo "openssh-client is already installed."
+fi
+
+# Install nmap if not installed
+if ! command -v nmap &> /dev/null; then
+    echo "nmap not found, installing..."
+    sudo apt-get install -y nmap
+else
+    echo "nmap is already installed."
+fi
+
+# Install unzip if not installed
+if ! command -v unzip &> /dev/null; then
+    echo "unzip not found, installing..."
+    sudo apt-get install -y unzip
+else
+    echo "unzip is already installed."
+fi
 
 # Install aws-cli if not installed
-
 if ! command -v aws &> /dev/null; then
     echo "aws-cli not found, installing..."
-    sudo apt-get install -y awscli
+    curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+    unzip awscliv2.zip
+    sudo ./aws/install
 else
     echo "aws-cli is already installed."
 fi
