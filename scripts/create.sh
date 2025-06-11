@@ -10,23 +10,30 @@ terraform apply -auto-approve
 
 sleep 10  # Wait for resources to be ready
 
-# Save private key for SSH access
-echo "Saving SSH private key..."
-terraform output -raw private_key > ../minecraft-key.pem
-chmod 600 ../minecraft-key.pem
-
 echo "Infrastructure created."
-echo "SSH key saved as minecraft-key.pem"
 echo "Configuring Minecraft server..."
 
 INSTANCE_IP=$(terraform output -raw instance_public_ip)
-SSH_KEY="../minecraft-key.pem"
+
+# Use SSH key from environment variable or local file
+if [ -n "$SSH_KEY" ]; then
+    echo "Using SSH key from environment variable..."
+    echo "$SSH_KEY" > ../minecraft-key.pem
+    chmod 600 ../minecraft-key.pem
+    SSH_KEY_FILE="../minecraft-key.pem"
+elif [ -f "../minecraft-key.pem" ]; then
+    echo "Using existing SSH key file..."
+    SSH_KEY_FILE="../minecraft-key.pem"
+else
+    echo "Error: No SSH key found. Set SSH_KEY environment variable or place key at minecraft-key.pem"
+    exit 1
+fi
 
 echo "Configuring server at $INSTANCE_IP..."
 
 # Wait for SSH
 echo "Waiting for SSH..."
-until ssh -i "$SSH_KEY" -o ConnectTimeout=5 -o StrictHostKeyChecking=no ubuntu@$INSTANCE_IP exit 2>/dev/null; do
+until ssh -i "$SSH_KEY_FILE" -o ConnectTimeout=5 -o StrictHostKeyChecking=no ubuntu@$INSTANCE_IP exit 2>/dev/null; do
     echo "Waiting for SSH to be available..."
     sleep 10
 done
@@ -34,9 +41,9 @@ done
 echo "Installing Java and setting up Minecraft server..."
 
 # Install Java and dependencies
-ssh -i "$SSH_KEY" -o StrictHostKeyChecking=no ubuntu@$INSTANCE_IP <<'EOF'
-sudo yum update -y
-sudo yum install -y java-17-amazon-corretto-headless wget
+ssh -i "$SSH_KEY_FILE" -o StrictHostKeyChecking=no ubuntu@$INSTANCE_IP <<'EOF'
+sudo apt update -y
+sudo apt install -y openjdk-17-jre-headless wget
 
 # Create minecraft directory
 mkdir -p ~/minecraft
@@ -67,8 +74,8 @@ After=network.target
 
 [Service]
 Type=simple
-User=ec2-user
-WorkingDirectory=/home/ec2-user/minecraft
+User=ubuntu
+WorkingDirectory=/home/ubuntu/minecraft
 ExecStart=/usr/bin/java -Xmx1G -Xms1G -jar server.jar nogui
 Restart=on-failure
 RestartSec=5

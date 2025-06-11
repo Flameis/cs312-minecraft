@@ -15,3 +15,9 @@ variable "ami_id" {
   type        = string
   default     = "ami-07b8a117da8f2c473" # Ubuntu Server 20.04 LTS in us-west-2
 }
+
+variable "key_name" {
+  description = "Name of the AWS key pair to use for SSH access"
+  type        = string
+  default     = "minecraft-server-key"
+}
