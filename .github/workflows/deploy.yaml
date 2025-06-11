@@ -3,12 +3,12 @@ name: Deploy Minecraft Server
 on:
   push:
     branches: [main]
-  workflow_dispatch:
-    inputs:
-      action:
-        type: choice
-        options: [deploy, destroy, test]
-        default: deploy
+  # workflow_dispatch:
+  #   inputs:
+  #     action:
+  #       type: choice
+  #       options: [deploy, destroy, test]
+  #       default: deploy
 
 env:
   AWS_DEFAULT_REGION: us-west-2
@@ -16,8 +16,8 @@ env:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'deploy')
-    
+    if: github.event_name == 'push'
+
     steps:
     - uses: actions/checkout@v4
     
