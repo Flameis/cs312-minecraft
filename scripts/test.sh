@@ -4,14 +4,15 @@ echo "Testing server..."
 
 cd terraform
 INSTANCE_IP=$(terraform output -raw instance_public_ip)
+SSH_KEY="../minecraft-key.pem"
 
 echo "Testing $INSTANCE_IP..."
 
 # SSH test
-ssh -o ConnectTimeout=10 -o StrictHostKeyChecking=no ec2-user@$INSTANCE_IP exit && echo "SSH: OK" || echo "SSH: FAILED"
+ssh -i "$SSH_KEY" -o ConnectTimeout=10 -o StrictHostKeyChecking=no ec2-user@$INSTANCE_IP exit && echo "SSH: OK" || echo "SSH: FAILED"
 
 # Service test via SSH
-ssh -o ConnectTimeout=10 -o StrictHostKeyChecking=no ec2-user@$INSTANCE_IP "sudo systemctl is-active minecraft" | grep -q "active" && echo "Minecraft service: Running" || echo "Minecraft service: NOT RUNNING"
+ssh -i "$SSH_KEY" -o ConnectTimeout=10 -o StrictHostKeyChecking=no ec2-user@$INSTANCE_IP "sudo systemctl is-active minecraft" | grep -q "active" && echo "Minecraft service: Running" || echo "Minecraft service: NOT RUNNING"
 
 # Port test
 if command -v nmap &> /dev/null; then

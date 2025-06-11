@@ -4,6 +4,10 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 4.16"
     }
+    tls = {
+      source  = "hashicorp/tls"
+      version = "~> 4.0"
+    }
   }
 
   required_version = ">= 1.2.0"
@@ -11,6 +15,12 @@ terraform {
 
 provider "aws" {
   region  = "us-west-2"
+}
+
+# Generate SSH key pair
+resource "tls_private_key" "minecraft_key" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
 }
 
 # Security group for Minecraft server
@@ -44,10 +54,10 @@ resource "aws_security_group" "minecraft_sg" {
   }
 }
 
-# Key pair for SSH access
+# Key pair for SSH access using generated key
 resource "aws_key_pair" "minecraft_key" {
   key_name   = "minecraft-server-key"
-  public_key = file("~/.ssh/id_rsa.pub")
+  public_key = tls_private_key.minecraft_key.public_key_openssh
 }
 
 resource "aws_instance" "app_server" {

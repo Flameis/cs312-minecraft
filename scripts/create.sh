@@ -1,15 +1,30 @@
 #!/bin/bash
 
-echo "Configuring Minecraft server..."
+echo "Creating infrastructure..."
 
 cd terraform
+terraform init
+terraform fmt
+terraform validate
+terraform apply
+
+# Save private key for SSH access
+echo "Saving SSH private key..."
+terraform output -raw private_key > ../minecraft-key.pem
+chmod 600 ../minecraft-key.pem
+
+echo "Infrastructure created."
+echo "SSH key saved as minecraft-key.pem"
+echo "Configuring Minecraft server..."
 
 INSTANCE_IP=$(terraform output -raw instance_public_ip)
+SSH_KEY="../minecraft-key.pem"
+
 echo "Configuring server at $INSTANCE_IP..."
 
 # Wait for SSH
 echo "Waiting for SSH..."
-until ssh -o ConnectTimeout=5 -o StrictHostKeyChecking=no ec2-user@$INSTANCE_IP exit 2>/dev/null; do
+until ssh -i "$SSH_KEY" -o ConnectTimeout=5 -o StrictHostKeyChecking=no ec2-user@$INSTANCE_IP exit 2>/dev/null; do
     echo "Waiting for SSH to be available..."
     sleep 10
 done
@@ -17,7 +32,7 @@ done
 echo "Installing Java and setting up Minecraft server..."
 
 # Install Java and dependencies
-ssh -o StrictHostKeyChecking=no ec2-user@$INSTANCE_IP << 'EOF'
+ssh -i "$SSH_KEY" -o StrictHostKeyChecking=no ec2-user@$INSTANCE_IP <<'EOF'
 sudo yum update -y
 sudo yum install -y java-17-amazon-corretto-headless wget
 

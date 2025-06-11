@@ -6,8 +6,9 @@ on:
   workflow_dispatch:
     inputs:
       action:
+        description: 'Choose whether to deploy or destroy the infrastructure'
         type: choice
-        options: [deploy, destroy, test]
+        options: [deploy, destroy]
         default: deploy
 
 env:
@@ -43,9 +44,7 @@ jobs:
     - name: Deploy infrastructure
       run: |
         chmod +x scripts/*.sh
-        ./scripts/init.sh
-        sleep 120
-        ./scripts/configure.sh
+        ./scripts/create.sh
         ./scripts/test.sh
 
   destroy:
