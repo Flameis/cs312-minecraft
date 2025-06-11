@@ -42,8 +42,8 @@ echo "Installing Java and setting up Minecraft server..."
 
 # Install Java and dependencies
 ssh -i "$SSH_KEY_FILE" -o StrictHostKeyChecking=no ubuntu@$INSTANCE_IP <<'EOF'
-sudo apt update -y
-sudo apt install -y openjdk-17-jre-headless wget
+sudo apt update && sudo apt upgrade -y
+sudo apt install default-jre default-jdk -y
 
 # Create minecraft directory
 mkdir -p ~/minecraft
@@ -88,6 +88,7 @@ SERVICE
 sudo systemctl daemon-reload
 sudo systemctl enable minecraft
 sudo systemctl start minecraft
+sudo systemctl status minecraft
 
 echo "Minecraft server configured and started!"
 EOF

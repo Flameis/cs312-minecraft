@@ -57,6 +57,7 @@ jobs:
       run: |
         chmod +x scripts/*.sh
         ./scripts/create.sh
+        sleep 120  # Wait for the instance to be ready
         ./scripts/test.sh
       env:
         SSH_KEY: ${{ secrets.SSH_KEY }}
