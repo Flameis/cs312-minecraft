@@ -43,9 +43,9 @@ jobs:
     
     - name: Setup SSH key
       run: |
-        echo "${{ secrets.SSH_KEY }}" > minecraft-key.pem
-        chmod 600 minecraft-key.pem
-        ssh-keygen -y -f minecraft-key.pem > minecraft-key.pub
+        echo "${{ secrets.SSH_KEY }}" > minecraft-key
+        chmod 600 minecraft-key
+        ssh-keygen -y -f minecraft-key > minecraft-key.pub
       env:
         SSH_KEY: ${{ secrets.SSH_KEY }}
     
@@ -111,8 +111,8 @@ jobs:
     
     - name: Setup SSH key
       run: |
-        echo "${{ secrets.SSH_KEY }}" > minecraft-key.pem
-        chmod 600 minecraft-key.pem
+        echo "${{ secrets.SSH_KEY }}" > minecraft-key
+        chmod 600 minecraft-key
       env:
         SSH_KEY: ${{ secrets.SSH_KEY }}
     

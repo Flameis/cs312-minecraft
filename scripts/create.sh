@@ -13,11 +13,16 @@ fi
 # Create a new SSH key pair if not provided
 if [ -z "$SSH_KEY" ]; then
     echo "Generating new SSH key pair..."
-    ssh-keygen -t rsa -b 2048 -f minecraft-key.pem -N "" || { echo "Failed to generate SSH key"; exit 1; }
+    ssh-keygen -t rsa -b 2048 -f minecraft-key -N "" || { echo "Failed to generate SSH key"; exit 1; }
+    echo "SSH key pair generated: minecraft-key and minecraft-key.pub"
+    # Set the SSH key to the environment variable
+    SSH_KEY=$(cat minecraft-key)
+    export SSH_KEY
+    echo "SSH key set in environment variable."
 else
     echo "Using provided SSH key from environment variable."
-    echo "$SSH_KEY" > minecraft-key.pem
-    chmod 600 minecraft-key.pem
+    echo "$SSH_KEY" > minecraft-key
+    chmod 600 minecraft-key
 fi
 
 # Create or update the key pair in AWS
@@ -40,14 +45,14 @@ INSTANCE_IP=$(terraform output -raw instance_public_ip)
 # Use SSH key from environment variable or local file
 if [ -n "$SSH_KEY" ]; then
     echo "Using SSH key from environment variable..."
-    echo "$SSH_KEY" > ../minecraft-key.pem
-    chmod 600 ../minecraft-key.pem
-    SSH_KEY_FILE="../minecraft-key.pem"
-elif [ -f "../minecraft-key.pem" ]; then
+    echo "$SSH_KEY" > ../minecraft-key
+    chmod 600 ../minecraft-key
+    SSH_KEY_FILE="../minecraft-key"
+elif [ -f "../minecraft-key" ]; then
     echo "Using existing SSH key file..."
-    SSH_KEY_FILE="../minecraft-key.pem"
+    SSH_KEY_FILE="../minecraft-key"
 else
-    echo "Error: No SSH key found. Set SSH_KEY environment variable or place key at minecraft-key.pem"
+    echo "Error: No SSH key found. Set SSH_KEY environment variable or place key at minecraft-key"
     exit 1
 fi
 

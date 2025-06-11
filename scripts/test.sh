@@ -7,13 +7,13 @@ INSTANCE_IP=$(terraform output -raw instance_public_ip)
 
 # Use SSH key from environment variable or local file
 if [ -n "$SSH_KEY" ]; then
-    echo "$SSH_KEY" > ../minecraft-key.pem
-    chmod 600 ../minecraft-key.pem
-    SSH_KEY_FILE="../minecraft-key.pem"
-elif [ -f "../minecraft-key.pem" ]; then
-    SSH_KEY_FILE="../minecraft-key.pem"
+    echo "$SSH_KEY" > ../minecraft-key
+    chmod 600 ../minecraft-key
+    SSH_KEY_FILE="../minecraft-key"
+elif [ -f "../minecraft-key" ]; then
+    SSH_KEY_FILE="../minecraft-key"
 else
-    echo "Error: No SSH key found. Set SSH_KEY environment variable or place key at minecraft-key.pem"
+    echo "Error: No SSH key found. Set SSH_KEY environment variable or place key at minecraft-key"
     exit 1
 fi
 
