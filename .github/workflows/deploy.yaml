@@ -53,72 +53,7 @@ jobs:
       run: |
         chmod +x scripts/*.sh
         ./scripts/create.sh
-        sleep 60  # Wait for the instance to be ready
-        ./scripts/test.sh
-      env:
-        SSH_KEY: ${{ secrets.SSH_KEY }}
-
-  destroy:
-    runs-on: ubuntu-latest
-    if: github.event.inputs.action == 'destroy'
-    
-    steps:
-    - uses: actions/checkout@v4
-    
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v3
-      with:
-        terraform_version: "1.5"
-    
-    - name: Configure AWS
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-        aws-region: us-west-2
-    
-    - name: Destroy everything
-      run: |
-        chmod +x scripts/*.sh
-        ./scripts/destroy.sh
-
-  test:
-    runs-on: ubuntu-latest
-    if: github.event.inputs.action == 'test'
-    
-    steps:
-    - uses: actions/checkout@v4
-    
-    - name: Setup tools
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y jq nmap openssh-client
-    
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v3
-      with:
-        terraform_version: "1.5"
-        terraform_wrapper: false
-    
-    - name: Configure AWS
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-        aws-region: us-west-2
-    
-    - name: Setup SSH key
-      run: |
-        echo "${{ secrets.SSH_KEY }}" > minecraft-key
-        chmod 600 minecraft-key
-      env:
-        SSH_KEY: ${{ secrets.SSH_KEY }}
-    
-    - name: Test infrastructure
-      run: |
-        chmod +x scripts/*.sh
+        sleep 30  # Wait for the instance to be ready
         ./scripts/test.sh
       env:
         SSH_KEY: ${{ secrets.SSH_KEY }}

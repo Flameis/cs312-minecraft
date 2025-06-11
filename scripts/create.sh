@@ -14,9 +14,13 @@ export AWS_DEFAULT_REGION=us-west-2
 export TF_VAR_instance_type=t3.small
 export TF_VAR_minecraft_port=25565
 
-# Create a new SSH key pair if not provided
-if [ -z "$SSH_KEY" ]; then
-    echo "Generating new SSH key pair..."
+# Set the SSH key from file if it exists
+SSH_KEY_FILE="../minecraft-key"
+if [ -f "$SSH_KEY_FILE" ] && [ -z "$SSH_KEY" ]; then
+    echo "Using existing SSH key file: $SSH_KEY_FILE"
+    SSH_KEY=$(cat "$SSH_KEY_FILE")
+else if [ -z "$SSH_KEY" ]; then
+    echo "No SSH key file found at $SSH_KEY_FILE, creating a new key pair."
     ssh-keygen -t rsa -b 2048 -f minecraft-key -N "" || { echo "Failed to generate SSH key"; exit 1; }
     echo "SSH key pair generated: minecraft-key and minecraft-key.pub"
     # Set the SSH key to the environment variable

@@ -6,9 +6,7 @@ Luke Scovel – 934-459-132 – CS312 System Administration
 
 ## Background
 
-This project provides a fully automated solution for deploying and managing a Minecraft server on AWS infrastructure. Using Infrastructure as Code (IaC) principles, the system provisions EC2 instances, configures networking, installs dependencies, and sets up the Minecraft server with proper systemd service management.
-
-The automation eliminates manual configuration steps and ensures consistent, repeatable deployments. The server is configured to automatically start on boot and can be managed through systemd commands for proper shutdown procedures.
+This project provides a fully automated solution for deploying and managing a Minecraft server on AWS infrastructure. The system provisions EC2 instances, configures networking, installs dependencies, and sets up the Minecraft server with proper systemd service management. The server is configured to automatically start on boot and can be managed through systemd commands for proper shutdown procedures.
 
 ### What We'll Do:
 - Provision AWS EC2 infrastructure using Terraform
@@ -28,9 +26,10 @@ The automation eliminates manual configuration steps and ensures consistent, rep
 ## Requirements
 
 - An AWS account
+- A linux machine or WSL setup
 - Basic knowledge of Linux commands
-- A Minecraft client installed on your local machine
-- A linux environment with `git`, `terraform`, and `aws-cli` installed
+- Git installed
+- AWS CLI configured with credentials
 
 ### AWS Credentials Setup
 1. Access your AWS Management Console and retrieve credentials
@@ -61,7 +60,7 @@ aws_session_token=<YOUR_SESSION_TOKEN>
 
 ### 1. Clone and Setup
 ```bash
-git clone <your-repository-url>
+git clone https://github.com/Flameis/cs312-minecraft.git
 cd cs312-minecraft
 chmod +x scripts/*.sh
 ```
@@ -76,20 +75,29 @@ chmod +x scripts/*.sh
 ./scripts/create.sh
 ```
 
-### 4. Test the Minecraft Server
+### 4. Test the Minecraft Server (Output will show server IP)
 ```bash
 ./scripts/test.sh
 ```
 
+### 5. Restart the Server
+```bash
+./scripts/restart.sh
+```
+
+### 6. Destroy the Resources
+```bash
+./scripts/destroy.sh
+```
 ---
 
 ## Detailed Commands
 
 ### `./scripts/install.sh`
 Installs all required dependencies for the automation pipeline:
-- **AWS CLI**: For interacting with AWS services programmatically
+- **aws-cli**: For interacting with AWS services
 - **Terraform**: Infrastructure as Code tool for provisioning AWS resources
-- **SSH client**: For secure connection to EC2 instances
+- **OpenSSH**: For secure connection to EC2 instances
 - **jq**: JSON processor for parsing AWS API responses
 - **nmap**: Network scanner for testing server connectivity
 
@@ -162,9 +170,6 @@ sudo systemctl restart minecraft
 - [Terraform Documentation](https://developer.hashicorp.com/terraform/docs)
 - [SSH Configuration Guide](https://www.ssh.com/academy/ssh/config)
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
+- [GitHub Copilot](https://github.com/features/copilot)
 
 ---
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
