@@ -20,14 +20,6 @@ aws_access_key_id=<YOUR_ACCESS_KEY>
 aws_secret_access_key=<YOUR_SECRET_KEY>
 aws_session_token=<YOUR_SESSION_TOKEN>
 ```
-
-### Environment Variables
-Set the following environment variables:
-```bash
-export AWS_DEFAULT_REGION=us-west-2
-export TF_VAR_instance_type=t3.small
-export TF_VAR_minecraft_port=25565
-```
 ---
 
 ## Quick Start

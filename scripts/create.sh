@@ -10,6 +10,10 @@ else
     echo "AWS CLI is configured."
 fi
 
+export AWS_DEFAULT_REGION=us-west-2
+export TF_VAR_instance_type=t3.small
+export TF_VAR_minecraft_port=25565
+
 # Create a new SSH key pair if not provided
 if [ -z "$SSH_KEY" ]; then
     echo "Generating new SSH key pair..."
