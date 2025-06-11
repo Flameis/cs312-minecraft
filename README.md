@@ -146,6 +146,6 @@ Complete infrastructure cleanup:
 - [Terraform Documentation](https://developer.hashicorp.com/terraform/docs)
 - [SSH Configuration Guide](https://www.ssh.com/academy/ssh/config)
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
-- [GitHub Copilot](https://github.com/features/copilot)
+- [GitHub Copilot for Formatting](https://github.com/features/copilot)
 
 ---
