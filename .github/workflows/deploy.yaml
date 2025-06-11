@@ -46,10 +46,6 @@ jobs:
         echo "${{ secrets.SSH_KEY }}" > minecraft-key.pem
         chmod 600 minecraft-key.pem
         ssh-keygen -y -f minecraft-key.pem > minecraft-key.pub
-        
-        # Create or update the key pair in AWS
-        aws ec2 delete-key-pair --key-name minecraft-server-key 2>/dev/null || true
-        aws ec2 import-key-pair --key-name minecraft-server-key --public-key-material fileb://minecraft-key.pub
       env:
         SSH_KEY: ${{ secrets.SSH_KEY }}
     
@@ -86,9 +82,6 @@ jobs:
       run: |
         chmod +x scripts/*.sh
         ./scripts/destroy.sh
-        
-        # Clean up key pair
-        aws ec2 delete-key-pair --key-name minecraft-server-key 2>/dev/null || true
 
   test:
     runs-on: ubuntu-latest

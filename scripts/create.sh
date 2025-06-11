@@ -2,6 +2,10 @@
 
 echo "Creating infrastructure..."
 
+# Create or update the key pair in AWS
+aws ec2 delete-key-pair --key-name minecraft-server-key 2>/dev/null || true
+aws ec2 import-key-pair --key-name minecraft-server-key --public-key-material fileb://minecraft-key.pub
+
 cd terraform
 terraform init
 terraform fmt

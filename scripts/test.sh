@@ -25,12 +25,7 @@ ssh -i "$SSH_KEY_FILE" -o ConnectTimeout=10 -o StrictHostKeyChecking=no ubuntu@$
 # Service test via SSH
 ssh -i "$SSH_KEY_FILE" -o ConnectTimeout=10 -o StrictHostKeyChecking=no ubuntu@$INSTANCE_IP "sudo systemctl is-active minecraft" | grep -q "active" && echo "Minecraft service: Running" || echo "Minecraft service: NOT RUNNING"
 
-# Port test
-if command -v nmap &> /dev/null; then
-    nmap -p 25565 $INSTANCE_IP | grep -q "open" && echo "Port 25565: Open" || echo "Port 25565: CLOSED"
-else
-    timeout 5 bash -c "</dev/tcp/$INSTANCE_IP/25565" && echo "Port 25565: Open" || echo "Port 25565: CLOSED"
-fi
+nmap -sV -Pn -p T:25565 $INSTANCE_IP
 
-echo ""
-echo "Connect to: $INSTANCE_IP:25565"
+echo "Connect to: $INSTANCE_IP:25565 in the Minecraft client."
+echo "Test completed."
