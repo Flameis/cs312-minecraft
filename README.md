@@ -2,84 +2,24 @@
 
 Luke Scovel – 934-459-132 – CS312 System Administration
 
-## Background
-
-This project automates the provisioning, configuration, and deployment of a Minecraft server on AWS infrastructure using Infrastructure as Code (IaC) principles. Unlike manual setup processes, this solution uses Terraform for infrastructure provisioning, SSH for configuration management, and bash scripts for orchestration to create a fully automated, reproducible deployment pipeline.
-
-**What we'll do:**
-- Provision AWS VPC, subnets, security groups, and EC2 instances using Terraform
-- Configure the Minecraft server environment using SSH automation
-- Implement proper service management with systemd
-- Ensure automatic server startup/shutdown on instance reboot
-- Create a complete CI/CD pipeline for infrastructure management
-
-**How we'll do it:**
-- Use Terraform to define and provision AWS infrastructure
-- Use SSH automation to configure the EC2 instance and install Minecraft server
-- Implement proper service lifecycle management
-- Version control all infrastructure and configuration code
-
 ---
 
 ## Requirements
 
-### Prerequisites
-- **AWS Account** with programmatic access
-- **AWS CLI v2.x** installed and configured
-- **Terraform v1.5+** installed
-- **SSH client** for remote configuration
-- **Git** for version control
-- **nmap** for connectivity testing
-- **jq** for JSON parsing
-
 ### AWS Credentials Setup
 1. Access your AWS Learner Lab and retrieve credentials
-2. Configure AWS CLI:
-   ```bash
-   aws configure
-   # Enter your AWS Access Key ID, Secret Access Key, and region (us-west-2)
-   ```
-3. Verify access:
-   ```bash
-   aws sts get-caller-identity
-   ```
+2. Setup your repository with the following repository variables:
+   - `AWS_ACCESS_KEY_ID`
+   - `AWS_SECRET_ACCESS_KEY`
+   - `AWS_SESSION`
+   - `SSH_KEY` (Create your own private key for SSH access)
 
 ### Environment Variables
-Set the following environment variables (optional but recommended):
+Set the following environment variables:
 ```bash
 export AWS_DEFAULT_REGION=us-west-2
 export TF_VAR_instance_type=t3.small
 export TF_VAR_minecraft_port=25565
-```
-
----
-
-## Pipeline Architecture
-
-```
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   Git Repository │    │   Terraform      │    │   SSH           │
-│                 │───▶│   Infrastructure │───▶│   Configuration │
-│ • IaC Scripts   │    │   Provisioning   │    │   Management    │
-│ • SSH Scripts   │    │                  │    │                 │
-└─────────────────┘    └──────────────────┘    └─────────────────┘
-                                │                        │
-                                ▼                        ▼
-                       ┌─────────────────┐    ┌─────────────────┐
-                       │   AWS VPC       │    │   EC2 Instance  │
-                       │ • Subnets       │    │ • Java Runtime  │
-                       │ • Security Grps │    │ • Minecraft Srv │
-                       │ • Internet GW   │    │ • Systemd Svc   │
-                       └─────────────────┘    └─────────────────┘
-```
-
-### Major Pipeline Steps
-1. **Infrastructure Provisioning** - Terraform creates AWS resources
-2. **Instance Configuration** - SSH automation configures the EC2 instance
-3. **Minecraft Installation** - Automated download and setup
-4. **Service Configuration** - Systemd service for auto-start/stop
-5. **Validation** - Network connectivity testing
-
 ---
 
 ## Quick Start
@@ -97,7 +37,7 @@ chmod +x scripts/*.sh
 ./scripts/create.sh
 ```
 
-### 3. Validate Deployment
+### 3. Test Connectivity
 ```bash
 # Test connectivity
 ./scripts/test.sh
@@ -190,35 +130,15 @@ ssh -i minecraft-key.pem ec2-user@<INSTANCE_IP> "sudo systemctl status minecraft
 
 ---
 
-## Project Structure
-
-```
-cs312-minecraft/
-├── README.md
-├── terraform/
-│   ├── main.tf
-│   ├── variables.tf
-│   └── outputs.tf
-├── scripts/
-│   ├── create.sh
-│   ├── test.sh
-│   └── destroy.sh
-├── .github/
-│   └── workflows/
-│       └── deploy.yaml
-└── setup.md
-```
-
----
-
 ## Resources and Sources
 
-- [Terraform AWS Provider Documentation](https://registry.terraform.io/providers/hashicorp/aws/latest/docs)
-- [AWS EC2 SSH Access Guide](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AccessingInstancesLinux.html)
-- [Minecraft Server Download API](https://launchermeta.mojang.com/mc/game/version_manifest.json)
-- [AWS VPC Best Practices](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-security-best-practices.html)
-- [Systemd Service Management](https://www.freedesktop.org/software/systemd/man/systemd.service.html)
-- [Infrastructure as Code Principles](https://www.terraform.io/intro/index.html)
+- [Minecraft Server Download](https://www.minecraft.net/en-us/download/server)
+- [Minecraft Version Manifest](https://launchermeta.mojang.com/mc/game/version_manifest.json)
+- [AWS EC2 Documentation](https://docs.aws.amazon.com/ec2/)
+- [Ubuntu Systemd Guide](https://www.digitalocean.com/community/tutorials/how-to-use-systemctl-to-manage-systemd-services-and-units)
+- [Terraform Documentation](https://developer.hashicorp.com/terraform/docs)
+- [SSH Configuration Guide](https://www.ssh.com/academy/ssh/config)
+- [GitHub Actions Documentation](https://docs.github.com/en/actions)
 
 ---
 

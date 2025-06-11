@@ -51,7 +51,7 @@ cd ~/minecraft
 
 # Download latest Minecraft server
 echo "Downloading Minecraft server..."
-wget -O server.jar https://piston-data.mojang.com/v1/objects/84194a2f286ef7c14ed7ce0090dba59902951553/server.jar
+wget -O server.jar $(curl -s https://launchermeta.mojang.com/mc/game/version_manifest.json | jq -r '.latest.release as $latest | .versions[] | select(.id == $latest) | .url' | xargs curl -s | jq -r '.downloads.server.url')
 
 # Accept EULA
 echo 'eula=true' > eula.txt
