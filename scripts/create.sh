@@ -19,7 +19,7 @@ SSH_KEY_FILE="../minecraft-key"
 if [ -f "$SSH_KEY_FILE" ] && [ -z "$SSH_KEY" ]; then
     echo "Using existing SSH key file: $SSH_KEY_FILE"
     SSH_KEY=$(cat "$SSH_KEY_FILE")
-else if [ -z "$SSH_KEY" ]; then
+elif [ -z "$SSH_KEY" ]; then
     echo "No SSH key file found at $SSH_KEY_FILE, creating a new key pair."
     ssh-keygen -t rsa -b 2048 -f minecraft-key -N "" || { echo "Failed to generate SSH key"; exit 1; }
     echo "SSH key pair generated: minecraft-key and minecraft-key.pub"
