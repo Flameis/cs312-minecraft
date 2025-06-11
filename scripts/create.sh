@@ -2,10 +2,18 @@
 
 echo "Creating infrastructure..."
 
+# Configure AWS CLI if not already configured
+if ! aws sts get-caller-identity &>/dev/null; then
+    echo "AWS CLI not configured. Please configure it using 'aws configure'."
+    exit 1
+else
+    echo "AWS CLI is configured."
+fi
+
 # Create a new SSH key pair if not provided
 if [ -z "$SSH_KEY" ]; then
     echo "Generating new SSH key pair..."
-    ssh-keygen -t rsa -b 2048 -f minecraft-key -N "" || { echo "Failed to generate SSH key"; exit 1; }
+    ssh-keygen -t rsa -b 2048 -f minecraft-key.pem -N "" || { echo "Failed to generate SSH key"; exit 1; }
 else
     echo "Using provided SSH key from environment variable."
     echo "$SSH_KEY" > minecraft-key.pem

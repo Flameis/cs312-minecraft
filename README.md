@@ -7,12 +7,15 @@ Luke Scovel – 934-459-132 – CS312 System Administration
 ## Requirements
 
 ### AWS Credentials Setup
-1. Access your AWS Learner Lab and retrieve credentials
-2. Setup your repository with the following repository variables:
-   - `AWS_ACCESS_KEY_ID`
-   - `AWS_SECRET_ACCESS_KEY`
-   - `AWS_SESSION`
-   - `SSH_KEY` (Create your own private key for SSH access)
+1. Access your AWS Management Console and retrieve credentials
+2. Set up your AWS CLI with the provided credentials:
+```bash
+touch ~/.aws/credentials
+echo "[default]" >> ~/.aws/credentials
+echo "aws_access_key_id = <YOUR_ACCESS_KEY>" >> ~/.aws/credentials
+echo "aws_secret_access_key = <YOUR_SECRET_KEY>" >> ~/.aws/credentials
+echo "aws_session_token = <YOUR_SESSION_TOKEN>" >> ~/.aws/credentials
+```
 
 ### Environment Variables
 Set the following environment variables:
